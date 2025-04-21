@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auth Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .auth-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      padding: 30px 40px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      color: #555;
+    }
+
+    button {
+      width: 100%;
+      background-color: #1d1d2f;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .toggle-text {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .toggle-link {
+      color: #4285f4;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .toggle-link:hover {
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <!-- SIGNUP FORM -->
+    <div id="signupForm">
+      <h1>Sign Up</h1>
+      <form id="signup">
+        <input type="email" id="signupEmail" placeholder="Email" required />
+        <input type="password" id="signupPassword" placeholder="Password" required />
+        <button type="submit">Sign Up</button>
+      </form>
+      <p class="toggle-text">Already have an account? <span class="toggle-link" onclick="showLogin()">Login</span></p>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm" class="hidden">
+      <h1>Login</h1>
+      <form id="login">
+        <input type="email" id="loginEmail" placeholder="Email" required />
+        <input type="password" id="loginPassword" placeholder="Password" required />
+        <button type="submit">Login</button>
+      </form>
+      <p class="toggle-text">Don't have an account? <span class="toggle-link" onclick="showSignup()">Sign Up</span></p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD7nn06lbueDr1I11F9rGnn65RUS-_RWyQ",
+      authDomain: "authentication-23920.firebaseapp.com",
+      projectId: "authentication-23920",
+      storageBucket: "authentication-23920.firebasestorage.app",
+      messagingSenderId: "685953657661",
+      appId: "1:685953657661:web:ace5ffae6611842f6ab354"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Signup
+    document.getElementById("signup").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Signup successful! Please login with your credentials.");
+          showLogin(); // Redirect to login form
+        })
+        .catch((error) => {
+          alert("Signup error: " + error.message);
+        });
+    });
+
+    // Login
+    document.getElementById("login").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Login successful!");
+          window.location.href = "index.html";
+          // Redirect or do something here (like show logout or user dashboard)
+        })
+        .catch((error) => {
+          alert("Login error: " + error.message);
+        });
+    });
+
+    // Toggle functions
+    window.showLogin = function () {
+      document.getElementById("signupForm").classList.add("hidden");
+      document.getElementById("loginForm").classList.remove("hidden");
+    }
+
+    window.showSignup = function () {
+      document.getElementById("loginForm").classList.add("hidden");
+      document.getElementById("signupForm").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
